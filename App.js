@@ -1,7 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
 import {
-  StyleSheet,
   Text,
   View,
   Button,
@@ -9,24 +8,52 @@ import {
   TextInput,
   ScrollView,
 } from "react-native";
+import { styles } from "./Styles";
 
-import usePostApiHook from "./Hooks/PostApiHook";
+
+// Imports for custom hooks.
+import usePostApiHook from "./Hooks/usePostApiHook";
 import useGetApiHook from "./Hooks/useGetApiHook";
 
+
+// URLs for making requests.
+var urlPost = "http://talk2you-live.lingmo-api.com/api/user"
+const urlGet = 'https://reactnative.dev/movies.json'
+
+
 export default function App() {
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
 
+  // Using custom hooks.
   const { data, getData } = useGetApiHook();
-  const { message, postData } = usePostApiHook(username, password, email);
+  const { message, postData } = usePostApiHook();
 
   useEffect(() => {
-    getData();
+      getData(urlGet);
   });
 
+
+  // Called when button is pressed.
   function onButtonPress() {
-    postData();
+
+    var params = {
+
+      password: password,
+      languageId: "en-US",
+      couponCode: "",
+      username: username,
+      deviceToken: "",
+      fullName: username,
+      email: email,
+      notificationApp: "lingmoimtab",
+      phone: "00000000000",
+
+    }
+
+    postData(urlPost, params);
     alert(message);
   }
 
@@ -62,32 +89,10 @@ export default function App() {
             setPassword(text);
           }}
         />
-        <Button onPress={onButtonPress} title="Press me to send data" />
+        <Button onPress={onButtonPress} title="Sign up" />
       </View>
 
       <StatusBar style="auto" />
     </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex:1,
-    margin:16,
-    backgroundColor: "#fff",
-    marginTop: 60,
-  },
-  text: {
-    fontSize: 24,
-  },
-  text2:{
-    fontSize:18,
-    margin:4
-  },
-  fields: {
-    margin: 8,
-    backgroundColor: "lightgrey",
-    height: 50,
-    padding: 4,
-  },
-});

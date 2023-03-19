@@ -1,21 +1,19 @@
 import { useState } from "react"
+import axios from "axios"
 
 const useGetApiHook = () => {
     const[data, setData] = useState(null)
 
-    const url = 'https://reactnative.dev/movies.json'
-    const getData = async() => {
+    const getData = async(url) => {
 
-        try {
-            const response = await fetch(url);
-            const json = await response.json();
+      axios.get(url)
+      .then(function(response){
+        setData(response.data.movies)
+      })
+      .catch(function(error){
+        console.log(error)
+      })
 
-            setData(json.movies);
-            console.log(data)
-
-          } catch (error) {
-            console.error(error);
-          }
     }
     return {data, getData};
 
